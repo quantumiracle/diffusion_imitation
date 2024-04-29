@@ -56,8 +56,11 @@ if __name__ == "__main__":
         curr_epoch = int(training_iters // int(args.num_steps_per_epoch))
 
         print(f"Training iterations: {training_iters}")
-        agent.save_model(f"models/QL_diffusion_{training_iters}")
         utils.print_banner(f"Train step: {training_iters}", separator="*", num_star=90)
+        # print loss
+        for key, value in loss_metric.items():
+            writer.add_scalar(key, value, curr_epoch)
+            print(f"{key}: {value}")
 
         if curr_epoch % 10 == 0:
             agent.save_model(output_dir, curr_epoch)
