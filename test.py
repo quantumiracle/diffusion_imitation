@@ -4,6 +4,7 @@ import torch
 import os
 from utils.data_sampler import Data_Sampler
 from utils import utils
+import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 
 with open(f'dataset/VFF-1686demos', 'rb') as f:
@@ -15,7 +16,7 @@ if __name__ == "__main__":
     parser.add_argument("--lr", default=3e-4, type=float)
     parser.add_argument("--batch_size", default=256, type=int)
     parser.add_argument("--max_action", default=1., type=float)
-    parser.add_argument("--num_epochs", default=100, type=int)
+    parser.add_argument("--num_epochs", default=1000, type=int)
     parser.add_argument("--num_steps_per_epoch", default=1000, type=int)
     parser.add_argument("--T", default=5, type=int)
     args = parser.parse_args()
@@ -59,7 +60,7 @@ if __name__ == "__main__":
         utils.print_banner(f"Train step: {training_iters}", separator="*", num_star=90)
         # print loss
         for key, value in loss_metric.items():
-            print(f"{key}: {value}")
+            print(f"{key}: {np.mean(value[-100:])}")
 
         if curr_epoch % 10 == 0:
             agent.save_model(output_dir, curr_epoch)

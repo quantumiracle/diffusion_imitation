@@ -71,7 +71,8 @@ class Diffusion_QL(object):
 
     def train(self, replay_buffer, iterations, batch_size=100, log_writer=None):
 
-        metric = {'bc_loss': [], 'ql_loss': [], 'actor_loss': [], 'critic_loss': []}
+        # metric = {'bc_loss': [], 'ql_loss': [], 'actor_loss': [], 'critic_loss': []}
+        metric = {'bc_loss': []}
         for _ in range(iterations):
             # Sample replay buffer / batch
             state, action, next_state, reward, not_done = replay_buffer.sample(batch_size)
@@ -134,13 +135,13 @@ class Diffusion_QL(object):
                 if self.grad_norm > 0:
                     log_writer.add_scalar('Actor Grad Norm', actor_grad_norms.max().item(), self.step)
                     # log_writer.add_scalar('Critic Grad Norm', critic_grad_norms.max().item(), self.step)
-                log_writer.add_scalar('Actor Loss', actor_loss.item(), self.step)
+                # log_writer.add_scalar('Actor Loss', actor_loss.item(), self.step)
                 log_writer.add_scalar('BC Loss', bc_loss.item(), self.step)
                 # log_writer.add_scalar('QL Loss', q_loss.item(), self.step)
                 # log_writer.add_scalar('Critic Loss', critic_loss.item(), self.step)
                 # log_writer.add_scalar('Target_Q Mean', target_q.mean().item(), self.step)
 
-            metric['actor_loss'].append(actor_loss.item())
+            # metric['actor_loss'].append(actor_loss.item())
             metric['bc_loss'].append(bc_loss.item())
             # metric['ql_loss'].append(q_loss.item())
             # metric['critic_loss'].append(critic_loss.item())
