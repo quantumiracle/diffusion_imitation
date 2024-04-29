@@ -124,8 +124,8 @@ class Diffusion_QL(object):
             if self.step % self.update_ema_every == 0:
                 self.step_ema()
 
-            for param, target_param in zip(self.critic.parameters(), self.critic_target.parameters()):
-                target_param.data.copy_(self.tau * param.data + (1 - self.tau) * target_param.data)
+            # for param, target_param in zip(self.critic.parameters(), self.critic_target.parameters()):
+            #     target_param.data.copy_(self.tau * param.data + (1 - self.tau) * target_param.data)
 
             self.step += 1
 
@@ -147,18 +147,25 @@ class Diffusion_QL(object):
 
         if self.lr_decay: 
             self.actor_lr_scheduler.step()
-            self.critic_lr_scheduler.step()
+            # self.critic_lr_scheduler.step()
 
         return metric
 
+    # def sample_action(self, state):
+    #     state = torch.FloatTensor(state.reshape(1, -1)).to(self.device)
+    #     state_rpt = torch.repeat_interleave(state, repeats=50, dim=0)
+    #     with torch.no_grad():
+    #         action = self.actor.sample(state_rpt)
+    #         q_value = self.critic_target.q_min(state_rpt, action).flatten()
+    #         idx = torch.multinomial(F.softmax(q_value), 1)
+    #     return action[idx].cpu().data.numpy().flatten()
+    
     def sample_action(self, state):
+        # sample one action per state
         state = torch.FloatTensor(state.reshape(1, -1)).to(self.device)
-        state_rpt = torch.repeat_interleave(state, repeats=50, dim=0)
         with torch.no_grad():
-            action = self.actor.sample(state_rpt)
-            q_value = self.critic_target.q_min(state_rpt, action).flatten()
-            idx = torch.multinomial(F.softmax(q_value), 1)
-        return action[idx].cpu().data.numpy().flatten()
+            action = self.actor.sample(state)
+        return action.cpu().data.numpy().flatten()
 
     def save_model(self, dir, id=None):
         if id is not None:
