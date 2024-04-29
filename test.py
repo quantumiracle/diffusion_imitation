@@ -9,9 +9,6 @@ from torch.utils.tensorboard import SummaryWriter
 with open(f'dataset/VFF-1686demos', 'rb') as f:
     dataset = pickle.load(f)
 
-state_dim = dataset['observations'].shape[1]
-action_dim = dataset['actions'].shape[1]
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()  
     parser.add_argument('--device', default=0, type=int)                       # device, {"cpu", "cuda", "cuda:0", "cuda:1"}, etc
@@ -32,8 +29,8 @@ if __name__ == "__main__":
     )
 
     from agents.ql_diffusion import Diffusion_QL as Agent
-    agent = Agent(state_dim=state_dim,
-        action_dim=action_dim,
+    agent = Agent(state_dim=data_sampler.state_dim,
+        action_dim=data_sampler.action_dim,
         max_action=args.max_action,
         device=args.device,
         discount=0.99,
