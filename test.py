@@ -56,7 +56,7 @@ if __name__ == "__main__":
         curr_epoch = int(training_iters // int(args.num_steps_per_epoch))
 
         print(f"Training iterations: {training_iters}")
-        agent.save(f"models/QL_diffusion_{training_iters}")
+        agent.save_model(f"models/QL_diffusion_{training_iters}")
         utils.print_banner(f"Train step: {training_iters}", separator="*", num_star=90)
 
         if curr_epoch % 10 == 0:
