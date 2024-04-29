@@ -59,7 +59,6 @@ if __name__ == "__main__":
         utils.print_banner(f"Train step: {training_iters}", separator="*", num_star=90)
         # print loss
         for key, value in loss_metric.items():
-            writer.add_scalar(key, value, curr_epoch)
             print(f"{key}: {value}")
 
         if curr_epoch % 10 == 0:
