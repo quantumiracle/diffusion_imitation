@@ -16,6 +16,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()  
     parser.add_argument('--device', default=0, type=int)                       # device, {"cpu", "cuda", "cuda:0", "cuda:1"}, etc
     parser.add_argument("--lr", default=3e-4, type=float)
+    parser.add_argument("--batch_size", default=256, type=int)
     parser.add_argument("--max_action", default=1., type=float)
     parser.add_argument("--num_epochs", default=100, type=int)
     parser.add_argument("--num_steps_per_epoch", default=1000, type=int)
@@ -63,5 +64,5 @@ if __name__ == "__main__":
 
         if curr_epoch % 10 == 0:
             agent.save_model(output_dir, curr_epoch)
-            
+
     writer.close()
