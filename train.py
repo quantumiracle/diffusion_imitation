@@ -45,17 +45,24 @@ if __name__ == "__main__":
         grad_norm=1.0,
         )
     output_dir = 'models/'
+    os.makedirs(output_dir, exist_ok=True)
+    training_iters = 0
+    max_timesteps = args.num_epochs * args.num_steps_per_epoch
+    while (training_iters < max_timesteps):
+        loss_metric = agent.train(data_sampler,
+                                  iterations=args.num_steps_per_epoch,
+                                  batch_size=args.batch_size,
+                                  log_writer=writer)       
+        training_iters += args.num_steps_per_epoch
+        curr_epoch = int(training_iters // int(args.num_steps_per_epoch))
 
-    agent.load_model(output_dir, 1000)
+        print(f"Training iterations: {training_iters}")
+        utils.print_banner(f"Train step: {training_iters}", separator="*", num_star=90)
+        # print loss
+        for key, value in loss_metric.items():
+            print(f"{key}: {np.mean(value[-100:])}")
 
-    # input concatenation of observation and goal, output action
-    obs = dataset['observations'][0]
-    goal = dataset['desired_goals'][0]
-    true_action = dataset['actions'][0]
-    state = np.concatenate([goal, obs])
-    state = torch.tensor(state).float().to(args.device)
-    action = agent.actor(state.unsqueeze(0)).cpu().detach().numpy()
+        if curr_epoch % 10 == 0:
+            agent.save_model(output_dir, curr_epoch)
 
-    print(action, true_action)
-
-
+    writer.close()
