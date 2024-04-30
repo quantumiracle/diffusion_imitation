@@ -47,7 +47,7 @@ if __name__ == "__main__":
     output_dir = 'models'
     os.makedirs(output_dir, exist_ok=True)
     training_iters = 0
-    agent.load_model('models/run1', 1000)
+    # agent.load_model('models/run1', 1000)  #  if load trained model
 
     max_timesteps = args.num_epochs * args.num_steps_per_epoch
     while (training_iters < max_timesteps):
