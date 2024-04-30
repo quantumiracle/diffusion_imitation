@@ -5,7 +5,6 @@ import os
 from utils.data_sampler import Data_Sampler
 from utils import utils
 import numpy as np
-from torch.utils.tensorboard import SummaryWriter
 
 with open(f'dataset/VFF-1686demos', 'rb') as f:
     dataset = pickle.load(f)
@@ -23,11 +22,6 @@ if __name__ == "__main__":
     args.device = f"cuda:{args.device}" if torch.cuda.is_available() else "cpu"
 
     data_sampler = Data_Sampler(dataset, args.device)
-    writer = SummaryWriter(f"runs/test")
-    writer.add_text(
-        "hyperparameters",
-        "|param|value|\n|-|-|\n%s" % ("\n".join([f"|{key}|{value}|" for key, value in vars(args).items()])),
-    )
 
     from agents.ql_diffusion import Diffusion_QL as Agent
     agent = Agent(state_dim=data_sampler.state_dim,
@@ -56,7 +50,6 @@ if __name__ == "__main__":
     goal = dataset['desired_goals'][1]
     true_action = dataset['actions'][1]
     state = np.concatenate([goal, obs])
-    # state = torch.tensor(state).float().to(args.device)
     action = agent.sample_action(state)
 
     print(action, true_action)
