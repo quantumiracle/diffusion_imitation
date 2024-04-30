@@ -13,10 +13,10 @@ with open(f'dataset/VFF-1686demos', 'rb') as f:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()  
     parser.add_argument('--device', default=0, type=int)                       # device, {"cpu", "cuda", "cuda:0", "cuda:1"}, etc
-    parser.add_argument("--lr", default=3e-4, type=float)
+    parser.add_argument("--lr", default=1e-4, type=float)
     parser.add_argument("--batch_size", default=256, type=int)
     parser.add_argument("--max_action", default=1., type=float)
-    parser.add_argument("--num_epochs", default=1000, type=int)
+    parser.add_argument("--num_epochs", default=2000, type=int)
     parser.add_argument("--num_steps_per_epoch", default=1000, type=int)
     parser.add_argument("--T", default=5, type=int)
     args = parser.parse_args()
@@ -44,9 +44,11 @@ if __name__ == "__main__":
         lr_maxt=args.num_epochs,
         grad_norm=1.0,
         )
-    output_dir = 'models/'
+    output_dir = 'models'
     os.makedirs(output_dir, exist_ok=True)
     training_iters = 0
+    agent.load_model('models/run1', 1000)
+
     max_timesteps = args.num_epochs * args.num_steps_per_epoch
     while (training_iters < max_timesteps):
         loss_metric = agent.train(data_sampler,

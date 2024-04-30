@@ -44,17 +44,20 @@ if __name__ == "__main__":
         lr_maxt=args.num_epochs,
         grad_norm=1.0,
         )
-    output_dir = 'models/'
+    output_dir = 'models'
+    model_idx = 2000
 
-    agent.load_model(output_dir, 1000)
+    agent.load_model(output_dir, model_idx)
+    agent.model.eval()
+    agent.actor.eval()
 
     # input concatenation of observation and goal, output action
-    obs = dataset['observations'][0]
-    goal = dataset['desired_goals'][0]
-    true_action = dataset['actions'][0]
+    obs = dataset['observations'][1]
+    goal = dataset['desired_goals'][1]
+    true_action = dataset['actions'][1]
     state = np.concatenate([goal, obs])
-    state = torch.tensor(state).float().to(args.device)
-    action = agent.actor(state.unsqueeze(0)).cpu().detach().numpy()
+    # state = torch.tensor(state).float().to(args.device)
+    action = agent.sample_action(state)
 
     print(action, true_action)
 
